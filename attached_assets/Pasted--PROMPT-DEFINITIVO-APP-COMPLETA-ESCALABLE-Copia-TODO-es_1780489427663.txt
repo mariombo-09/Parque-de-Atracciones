@@ -1,0 +1,344 @@
+🎮 🧠 PROMPT DEFINITIVO – APP COMPLETA (ESCALABLE)
+
+Copia TODO esto 👇
+
+---
+
+## 🟦 CONTEXTO GENERAL
+
+Quiero crear una **aplicación web interactiva tipo videojuego educativo**, basada en la Física del Parque de Atracciones de Madrid.
+
+La app debe estar diseñada como una **plataforma escalable**, donde posteriormente se puedan añadir más atracciones con sus propios juegos.
+
+👉 Por ahora SOLO debe estar disponible:
+**FIORDOS**
+
+---
+
+## 🎯 OBJETIVO DE LA APP
+
+- Que alumnos de 3º ESO aprendan Física jugando  
+- Que puedan usarla de forma autónoma (sin profesor)  
+- Que cada atracción tenga su propio “escape room” narrativo  
+
+Concepto clave general de la app:
+
+👉 **“La Física explica todo lo que sientes en una atracción”**
+
+---
+
+# 🟨 ESTRUCTURA GLOBAL DE LA APP
+
+---
+
+## 🟧 1. PORTADA (HOME)
+
+Diseño moderno, juvenil, tipo videojuego.
+
+### Elementos:
+
+- Título grande:
+  👉 **“La Física de las Atracciones”**
+
+- Subtítulo:
+  👉 “Aprende jugando en el Parque de Atracciones”
+
+- Frase destacada visible:
+  👉 **“A toda acción hay una reacción”**
+
+- Fondo visual tipo parque de atracciones
+
+- Botón principal:
+  👉 **“INICIAR EXPERIENCIA”**
+
+---
+
+## 🟧 2. MAPA INTERACTIVO DEL PARQUE
+
+La app mostrará una imagen del mapa (yo la proporcionaré).
+
+### Requisitos:
+
+- Imagen a pantalla completa  
+- Interactiva  
+- Con marcadores de atracciones  
+
+---
+
+### 🟥 INTERACTIVIDAD ACTUAL
+
+- Solo debe estar activo:
+  👉 📍 **Fiordos**
+
+- El resto de atracciones:
+  👉 Aparecen bloqueadas (con icono 🔒)
+
+---
+
+## 🖱️ ACCIÓN
+
+Cuando el usuario pulsa en **Fiordos**:
+
+👉 Se abre la experiencia completa de esa atracción
+
+---
+
+# 🎬 INTRO NARRATIVA FIORDOS
+
+Pantalla inmersiva con historia:
+
+---
+
+### TEXTO:
+
+> “Alerta en la atracción FIORDOS.  
+> El sistema automático ha fallado.  
+> El barco se encuentra en modo manual y está fuera de control.  
+> Si no configuras correctamente la energía, la velocidad y el impacto…  
+> el barco podría estrellarse.”
+
+---
+
+👉 Rol del jugador:
+
+> “Eres el ingeniero encargado de salvar la atracción.”
+
+---
+
+Botón:
+👉 **“COMENZAR MISIÓN”**
+
+---
+
+# 🧩 ESCAPE ROOM COMPLETO (MUY ELABORADO)
+
+Debe ser:
+
+✅ Narrativo  
+✅ Interactivo  
+✅ Con decisiones  
+✅ Con feedback automático  
+✅ Sin teoría larga  
+
+---
+
+# 🔓 FASE 1: “ENERGÍA INICIAL”
+
+---
+
+## 🎬 HISTORIA
+
+> “El barco necesita energía para comenzar el recorrido.  
+> Si no es suficiente, se detendrá.  
+> Si es demasiada… el impacto será peligroso.”
+
+---
+
+## 🎮 INTERFAZ
+
+Selector visual de altura con animación:
+
+- 10 m  
+- 20 m  
+- 30 m ✅  
+- 50 m  
+
+---
+
+## 🧠 FEEDBACK INTELIGENTE
+
+- Baja:
+  👉 “El barco no tiene suficiente energía para moverse”
+
+- Alta:
+  👉 “Demasiada energía. Riesgo de accidente”
+
+- Correcta:
+  👉 “Energía óptima. Sistema activado”
+
+✅ Desbloquea siguiente fase
+
+---
+
+# 🔓 FASE 2: “CONTROL DE VELOCIDAD” (MODO PILOTO)
+
+---
+
+## 🎬 HISTORIA
+
+> “Estás controlando la bajada manualmente.  
+> La velocidad no puede ser ni demasiado alta ni demasiado baja.”
+
+---
+
+## 🎮 INTERFAZ INTERACTIVA
+
+Panel con 3 controles tipo videojuego:
+
+### 🎛️ Inclinación
+- Baja  
+- Media ✅  
+- Alta  
+
+### 🎛️ Carga del barco
+- Vacío  
+- Media ✅  
+- Completo  
+
+### 🎛️ Rozamiento
+- Bajo  
+- Normal ✅  
+- Alto  
+
+---
+
+## 🧠 SISTEMA DE RESULTADO
+
+- Combinación incorrecta:
+  👉 Mensaje dinámico según error  
+  (ej: “Velocidad excesiva” o “No llega al final”)
+
+- Correcta:
+  👉 “Velocidad estabilizada”
+
+---
+
+# 🔓 FASE 3: “FUERZAS OCULTAS”
+
+---
+
+## 🎬 HISTORIA
+
+> “Los sensores del sistema están dañados.  
+> Necesitas activar los sensores correctos para entender qué fuerzas actúan.”
+
+---
+
+## 🎮 INTERFAZ
+
+Panel de sensores (iconos interactivos):
+
+- Peso ✅  
+- Rozamiento ✅  
+- Motor ❌  
+- Viento ❌  
+
+---
+
+## 🧠 DINÁMICA
+
+- Selección múltiple  
+- Feedback inmediato  
+
+---
+
+## ✅ MENSAJE
+
+> “Has identificado las fuerzas reales del movimiento”
+
+---
+
+# 🔓 FASE 4: “EL IMPACTO FINAL”
+
+---
+
+## 🎬 HISTORIA
+
+> “El barco se aproxima al agua a gran velocidad.  
+> Si no tomas la decisión correcta, el impacto será destructivo.”
+
+---
+
+## 🎮 OPCIONES
+
+- Reducir altura  
+- Añadir volumen de agua ✅  
+- Frenar en seco  
+- Quitar peso  
+
+---
+
+## 🧠 FEEDBACK
+
+✅ Correcto:
+
+> “El agua absorbe la energía y reduce la velocidad”
+
+❌ Incorrecto:
+
+> “Impacto violento. Sistema dañado”
+
+---
+
+# 🟪 FINAL DINÁMICO
+
+---
+
+## ✅ ÉXITO
+
+> “MISIÓN COMPLETADA  
+> Has logrado controlar la energía, la velocidad y las fuerzas.”
+
+---
+
+### Mostrar:
+
+- Decisiones tomadas  
+- Conceptos aprendidos:
+  - Energía  
+  - Velocidad  
+  - Fuerzas  
+  - Interacción con el agua  
+
+---
+
+## ❌ FALLO
+
+> “El sistema ha fallado.  
+> Intenta optimizar tus decisiones como ingeniero.”
+
+Botón:
+👉 “REINTENTAR”
+
+---
+
+# 🎨 DISEÑO GENERAL
+
+- Estilo videojuego  
+- Colores llamativos  
+- Iconos claros  
+- Animaciones (éxito/error)  
+- Barra de progreso por fases  
+
+---
+
+# 🔊 OPCIONAL
+
+- Sonido de acierto ✅  
+- Sonido de error ❌  
+- Animación de “alerta” 🚨  
+
+---
+
+# 🔧 ESCALABILIDAD (MUY IMPORTANTE)
+
+La app debe estar preparada para:
+
+✅ Añadir nuevas atracciones en el mapa  
+✅ Cada una con su propio escape room  
+✅ Manteniendo la misma estructura  
+
+---
+
+# 🚀 RESULTADO FINAL ESPERADO
+
+Una app donde el alumno:
+
+- Explora el parque  
+- Selecciona una atracción  
+- Vive una misión interactiva  
+- Aprende Física sin darse cuenta  
+
+---
+
+---

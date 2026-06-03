@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "La Física de las Atracciones"
+version = "1.0.0"
+id = "artifacts/fisica-atracciones"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 3000
+
+[services.development]
+run = "pnpm --filter @workspace/fisica-atracciones run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/fisica-atracciones", "run", "build" ]
+publicDir = "artifacts/fisica-atracciones/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18933"
+BASE_PATH = "/"

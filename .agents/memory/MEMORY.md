@@ -1,0 +1,1 @@
+- [Física static serving](fisica-static-serving.md) — frontend served as built static files via Express (port 8080), never via Vite dev server; rebuild after every frontend change.
