@@ -1,0 +1,53 @@
+Quiero que adaptes este proyecto Vite + TypeScript con estructura de monorepo (carpeta artifacts/) para que sea completamente compatible con despliegues en plataformas como Netlify, Render y Cloudflare Pages.
+
+OBJETIVO:
+El proyecto debe poder construirse y desplegarse como aplicación estática sin errores de variables de entorno ni dependencias de servidor Node en producción.
+
+REQUISITOS OBLIGATORIOS:
+
+1. ELIMINAR DEPENDENCIAS DE VARIABLES DE ENTORNO OBLIGATORIAS EN BUILD
+- No debe fallar el build si faltan variables como PORT o BASE_PATH.
+- Si existen, deben ser opcionales con fallback seguro:
+  - PORT → default 3000 solo para dev server
+  - BASE_PATH → "/" por defecto en producción
+
+2. VITE CONFIG (IMPORTANTE)
+- Modificar vite.config.ts para que:
+  - No lance errores en build por process.env variables
+  - No requiera PORT ni BASE_PATH obligatoriamente
+  - Use valores por defecto seguros
+- El build debe funcionar sin ninguna variable externa.
+
+3. OUTPUT ESTÁTICO
+- El proyecto debe generar correctamente carpeta:
+  artifacts/fisica-atracciones/dist
+- Debe ser completamente estático (HTML, CSS, JS)
+- No debe requerir servidor Node en producción
+
+4. SCRIPTS PACKAGE.JSON
+Asegurar que existen estos scripts:
+
+- build: genera el proyecto
+- dev: modo desarrollo
+- preview: opcional para testing local
+
+Y añadir si falta:
+"start" solo si es necesario, pero NO obligatorio para producción.
+
+5. COMPATIBILIDAD DEPLOY
+- Debe funcionar en:
+  - Netlify (static site)
+  - Render (static site o serve dist)
+  - Cloudflare Pages
+- No usar configuraciones específicas de una sola plataforma.
+
+6. MONOREPO
+- Respetar estructura actual en artifacts/
+- Asegurar que el build se puede ejecutar desde la raíz usando filtros o entrando en el subproyecto correcto
+
+7. ERROR HANDLING
+- No usar throw new Error en configuración por variables de entorno faltantes
+- Reemplazar por defaults seguros
+
+RESULTADO FINAL:
+Un proyecto limpio, desplegable directamente sin configuración manual de variables en plataformas externas.
