@@ -206,6 +206,7 @@ export default function FiordosMission() {
   const [qHintLevel, setQHintLevel] = React.useState(0);
   const [showHints, setShowHints] = React.useState(false);
   const [qAnswered, setQAnswered] = React.useState(false);
+  const [showNextButton, setShowNextButton] = React.useState(false);
 
   const [feedback, setFeedback] = React.useState<{
     type: "correct" | "wrong";
@@ -242,6 +243,7 @@ export default function FiordosMission() {
       triggerFlash("correct");
       showFloating(total);
       setFeedback({ type: "correct", msg: mission.explanation, pts: total });
+      setTimeout(() => setShowNextButton(true), 2800);
     } else {
       setTotalErrors((e) => e + 1);
       setQHadError(true);
@@ -260,6 +262,7 @@ export default function FiordosMission() {
     setQHintLevel(0);
     setShowHints(false);
     setQAnswered(false);
+    setShowNextButton(false);
     if (missionIdx + 1 < MISSIONS.length) {
       setMissionIdx((i) => i + 1);
     } else {
@@ -609,15 +612,25 @@ export default function FiordosMission() {
                         </p>
                       </div>
                     </div>
-                    <Button
-                      onClick={handleNextMission}
-                      className="w-full h-11 font-serif font-bold tracking-widest bg-green-600 hover:bg-green-600/80 text-white"
-                    >
-                      {missionIdx + 1 < MISSIONS.length
-                        ? "SIGUIENTE MISIÓN"
-                        : "CONTINUAR"}{" "}
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
+                    <AnimatePresence>
+                      {showNextButton && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <Button
+                            onClick={handleNextMission}
+                            className="w-full h-11 font-serif font-bold tracking-widest bg-green-600 hover:bg-green-600/80 text-white"
+                          >
+                            {missionIdx + 1 < MISSIONS.length
+                              ? "SIGUIENTE MISIÓN"
+                              : "CONTINUAR"}{" "}
+                            <ChevronRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 )}
               </AnimatePresence>
