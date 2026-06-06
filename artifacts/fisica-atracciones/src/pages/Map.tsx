@@ -30,7 +30,7 @@ export default function Map() {
         <Link href="/fiordos">
           <motion.button 
             className="absolute z-20 flex flex-col items-center justify-center group"
-            style={{ left: "53%", top: "45%" }}
+            style={{ left: "88.2%", top: "45%" }}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             data-testid="link-fiordos"
