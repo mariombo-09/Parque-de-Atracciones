@@ -24,13 +24,13 @@ args = "La Física de las Atracciones"
 name = "La Física de las Atracciones"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "PORT=3000 BASE_PATH=/ pnpm --filter @workspace/fisica-atracciones run dev"
-waitForPort = 3000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=3001 BASE_PATH=/ pnpm --filter @workspace/fisica-atracciones run dev"
+waitForPort = 3001
 
 [agent]
 stack = "PNPM_WORKSPACE"
