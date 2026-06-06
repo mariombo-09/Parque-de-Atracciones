@@ -1,77 +1,287 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, ShieldAlert, RotateCcw, Map as MapIcon } from "lucide-react";
+import { RotateCcw, Map as MapIcon, FlaskConical } from "lucide-react";
+
+interface Achievement {
+  id: string;
+  icon: string;
+  label: string;
+  unlocked: boolean;
+}
+
+interface Rank {
+  icon: string;
+  title: string;
+  min: number;
+  max: number;
+}
+
+const RANKS: Rank[] = [
+  { icon: "🔧", title: "Aprendiz de Investigador", min: 0, max: 1000 },
+  { icon: "🧪", title: "Científico Junior", min: 1001, max: 1800 },
+  { icon: "🚀", title: "Científico Senior", min: 1801, max: 2500 },
+  { icon: "🏆", title: "Experto en Física", min: 2501, max: 3200 },
+  { icon: "👑", title: "Director Científico Joyfe", min: 3201, max: Infinity },
+];
+
+function getRank(points: number): Rank {
+  return (
+    RANKS.find((r) => points >= r.min && points <= r.max) ?? RANKS[0]
+  );
+}
 
 export default function FiordosResult() {
-  const isSuccess = sessionStorage.getItem("gameSuccess") === "true";
-  const errors = parseInt(sessionStorage.getItem("gameErrors") || "0");
+  const points = parseInt(sessionStorage.getItem("gamePoints") ?? "0");
+  const hypothesis = sessionStorage.getItem("gameHypothesis") ?? "";
+  const hintsUsed = parseInt(sessionStorage.getItem("gameHintsUsed") ?? "0");
+  const correctAnswers = parseInt(
+    sessionStorage.getItem("gameCorrectAnswers") ?? "0"
+  );
+  const totalErrors = parseInt(
+    sessionStorage.getItem("gameTotalErrors") ?? "0"
+  );
+  const noPistas = sessionStorage.getItem("gameNoPistas") === "true";
+  const noErrors = sessionStorage.getItem("gameNoErrors") === "true";
+
+  const TOTAL_QUESTIONS = 8;
+  const accuracy =
+    TOTAL_QUESTIONS > 0
+      ? Math.round((correctAnswers / TOTAL_QUESTIONS) * 100)
+      : 0;
+
+  const rank = getRank(points);
+
+  const achievements: Achievement[] = [
+    {
+      id: "sin_errores",
+      icon: "🏅",
+      label: "Sin errores",
+      unlocked: noErrors,
+    },
+    {
+      id: "sin_pistas",
+      icon: "🏅",
+      label: "Sin pistas",
+      unlocked: noPistas,
+    },
+    {
+      id: "velocista",
+      icon: "🏅",
+      label: "Velocista",
+      unlocked: correctAnswers >= TOTAL_QUESTIONS,
+    },
+    {
+      id: "cientifico_perfecto",
+      icon: "🏅",
+      label: "Científico Perfecto",
+      unlocked: noErrors && noPistas,
+    },
+    {
+      id: "maestro_fiordos",
+      icon: "🏅",
+      label: "Maestro de Fiordos",
+      unlocked: points >= 2800,
+    },
+  ];
+
+  const unlockedCount = achievements.filter((a) => a.unlocked).length;
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.12 } },
+  };
+  const item = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
 
   return (
-    <div className="min-h-[100dvh] bg-background text-foreground flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      
-      {/* Background FX */}
-      <div className={`absolute inset-0 pointer-events-none opacity-20 ${isSuccess ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary via-background to-background' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-destructive via-background to-background'}`} />
+    <div className="min-h-[100dvh] bg-background text-foreground flex flex-col items-center justify-start p-6 pt-10 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,200,255,0.07),_transparent_70%)] pointer-events-none" />
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage:
+            "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E')",
+        }}
+      />
 
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative z-10 w-full max-w-2xl bg-card border border-border p-8 md:p-12 shadow-2xl rounded-sm"
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="relative z-10 w-full max-w-2xl space-y-6"
       >
-        <div className="flex flex-col items-center text-center space-y-6">
-          {isSuccess ? (
-            <>
-              <ShieldCheck className="w-24 h-24 text-primary animate-pulse shadow-[0_0_30px_rgba(0,255,255,0.4)] rounded-full" />
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary tracking-widest uppercase">
-                MISIÓN COMPLETADA
-              </h1>
-              <p className="text-xl font-sans text-muted-foreground">
-                Has logrado controlar la energía, la velocidad y las fuerzas. El barco ha aterrizado de forma segura.
-              </p>
-              
-              <div className="w-full text-left bg-background p-6 border border-border mt-8">
-                <h3 className="font-serif text-accent tracking-widest uppercase mb-4 text-sm font-bold border-b border-border pb-2">Reporte del Ingeniero</h3>
-                <ul className="space-y-2 font-sans text-sm md:text-base text-foreground/80 list-disc list-inside">
-                  <li><strong>Energía Potencial:</strong> Calculada correctamente para iniciar la caída (30m).</li>
-                  <li><strong>Velocidad y Rozamiento:</strong> Parámetros estabilizados en modo manual.</li>
-                  <li><strong>Fuerzas Físicas:</strong> Identificación precisa de Peso y Rozamiento.</li>
-                  <li><strong>Interacción con fluidos:</strong> Uso del agua para disipar energía cinética.</li>
-                </ul>
-                <div className="mt-6 pt-4 border-t border-border flex justify-between font-mono text-sm text-muted-foreground">
-                  <span>ERRORES REGISTRADOS: {errors}</span>
-                  <span>ESTADO: ÓPTIMO</span>
+        {/* Header */}
+        <motion.div variants={item} className="text-center space-y-3">
+          <div className="flex justify-center">
+            <div className="border border-primary/30 bg-primary/5 px-6 py-2 flex items-center space-x-2 rounded-sm">
+              <FlaskConical className="w-5 h-5 text-primary" />
+              <span className="font-serif text-sm tracking-widest text-primary uppercase">
+                Joyfe Science Investigations
+              </span>
+            </div>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground tracking-widest uppercase">
+            Investigación Completada
+          </h1>
+          <p className="text-base font-sans text-muted-foreground max-w-md mx-auto">
+            Ya estás preparado para realizar el experimento real en los Fiordos.
+          </p>
+        </motion.div>
+
+        {/* Rank card */}
+        <motion.div
+          variants={item}
+          className="p-6 bg-card border border-primary/30 rounded-sm shadow-[0_0_40px_rgba(0,255,255,0.06)] text-center space-y-2"
+        >
+          <div className="text-6xl mb-2">{rank.icon}</div>
+          <div className="text-xs font-serif tracking-[0.3em] text-muted-foreground uppercase">
+            Tu rango científico
+          </div>
+          <div className="text-2xl md:text-3xl font-serif font-bold text-primary tracking-wide">
+            {rank.title}
+          </div>
+          <div className="text-4xl font-mono font-bold text-foreground pt-2">
+            🧪 {points.toLocaleString("es-ES")} pts
+          </div>
+        </motion.div>
+
+        {/* Stats grid */}
+        <motion.div variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: "Aciertos", value: `${correctAnswers}/${TOTAL_QUESTIONS}`, highlight: correctAnswers === TOTAL_QUESTIONS },
+            { label: "Precisión", value: `${accuracy}%`, highlight: accuracy >= 80 },
+            { label: "Pistas usadas", value: hintsUsed, highlight: hintsUsed === 0 },
+            { label: "Errores", value: totalErrors, highlight: totalErrors === 0 },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className={`p-4 border rounded-sm text-center ${
+                s.highlight
+                  ? "border-primary/30 bg-primary/5"
+                  : "border-border/40 bg-card/40"
+              }`}
+            >
+              <div
+                className={`text-2xl font-mono font-bold ${
+                  s.highlight ? "text-primary" : "text-foreground/70"
+                }`}
+              >
+                {s.value}
+              </div>
+              <div className="text-xs font-serif text-muted-foreground tracking-wider mt-1">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Hypothesis */}
+        {hypothesis && (
+          <motion.div
+            variants={item}
+            className="p-5 bg-card/40 border border-border/40 rounded-sm space-y-2"
+          >
+            <div className="text-xs font-serif tracking-widest text-muted-foreground uppercase">
+              Tu hipótesis inicial
+            </div>
+            <p className="font-sans text-foreground/80 italic leading-relaxed text-sm">
+              "{hypothesis}"
+            </p>
+          </motion.div>
+        )}
+
+        {/* Achievements */}
+        <motion.div variants={item} className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-serif tracking-[0.25em] text-muted-foreground uppercase">
+              Logros desbloqueados
+            </div>
+            <div className="text-xs font-serif text-primary">
+              {unlockedCount}/{achievements.length}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {achievements.map((a) => (
+              <div
+                key={a.id}
+                className={`p-3 border rounded-sm flex items-center space-x-2 transition-all ${
+                  a.unlocked
+                    ? "border-accent/40 bg-accent/5"
+                    : "border-border/20 bg-card/20 opacity-40"
+                }`}
+              >
+                <span className={`text-xl ${!a.unlocked && "grayscale"}`}>
+                  {a.icon}
+                </span>
+                <span
+                  className={`text-xs font-serif tracking-wide ${
+                    a.unlocked ? "text-accent" : "text-muted-foreground/50"
+                  }`}
+                >
+                  {a.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Rank scale */}
+        <motion.div variants={item} className="space-y-2">
+          <div className="text-xs font-serif tracking-[0.25em] text-muted-foreground uppercase">
+            Escala de rangos
+          </div>
+          <div className="space-y-1">
+            {RANKS.map((r) => {
+              const isCurrentRank = rank.title === r.title;
+              return (
+                <div
+                  key={r.title}
+                  className={`flex items-center justify-between px-3 py-2 rounded-sm text-xs font-sans ${
+                    isCurrentRank
+                      ? "bg-primary/10 border border-primary/30 text-primary font-bold"
+                      : "text-muted-foreground/60"
+                  }`}
+                >
+                  <span>
+                    {r.icon} {r.title}
+                  </span>
+                  <span className="font-mono">
+                    {r.max === Infinity
+                      ? `+${r.min.toLocaleString("es-ES")} pts`
+                      : `${r.min.toLocaleString("es-ES")}–${r.max.toLocaleString("es-ES")} pts`}
+                  </span>
                 </div>
-              </div>
+              );
+            })}
+          </div>
+        </motion.div>
 
-              <Link href="/mapa">
-                <Button size="lg" className="mt-8 w-full md:w-auto font-serif tracking-widest text-lg bg-primary hover:bg-primary/80 text-primary-foreground h-14 px-12" data-testid="btn-back-map">
-                  <MapIcon className="mr-2 h-5 w-5" /> VOLVER AL MAPA
-                </Button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <ShieldAlert className="w-24 h-24 text-destructive animate-pulse shadow-[0_0_30px_rgba(255,0,0,0.4)] rounded-full" />
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-destructive tracking-widest uppercase">
-                EL SISTEMA HA FALLADO
-              </h1>
-              <p className="text-xl font-sans text-muted-foreground">
-                Intenta optimizar tus decisiones como ingeniero. El impacto no fue controlado.
-              </p>
-
-              <div className="w-full text-center bg-destructive/10 p-6 border border-destructive/30 mt-8">
-                <p className="font-mono text-destructive mb-2">ERRORES COMETIDOS: {errors}</p>
-                <p className="text-sm font-sans text-destructive/80">Revisa los principios de conservación de la energía y fuerzas de rozamiento.</p>
-              </div>
-
-              <Link href="/fiordos/mision">
-                <Button size="lg" variant="outline" className="mt-8 w-full md:w-auto font-serif tracking-widest text-lg border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground h-14 px-12" data-testid="btn-retry">
-                  <RotateCcw className="mr-2 h-5 w-5" /> REINTENTAR
-                </Button>
-              </Link>
-            </>
-          )}
-        </div>
+        {/* Actions */}
+        <motion.div variants={item} className="grid grid-cols-2 gap-3 pb-10">
+          <Link href="/fiordos/mision">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-12 font-serif tracking-widest border-border/60 hover:border-primary/50"
+              data-testid="btn-retry"
+            >
+              <RotateCcw className="mr-2 h-4 w-4" /> REPETIR
+            </Button>
+          </Link>
+          <Link href="/mapa">
+            <Button
+              size="lg"
+              className="w-full h-12 font-serif tracking-widest bg-primary hover:bg-primary/80 text-primary-foreground"
+              data-testid="btn-back-map"
+            >
+              <MapIcon className="mr-2 h-4 w-4" /> MAPA
+            </Button>
+          </Link>
+        </motion.div>
       </motion.div>
     </div>
   );

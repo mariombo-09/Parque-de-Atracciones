@@ -1,311 +1,714 @@
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { AlertCircle, CheckCircle2, ChevronRight, Activity, Thermometer, Wind } from "lucide-react";
-
+import { Textarea } from "@/components/ui/textarea";
+import {
+  CheckCircle2,
+  AlertCircle,
+  ChevronRight,
+  Search,
+  FlaskConical,
+} from "lucide-react";
 import React from "react";
 
-type Phase = 1 | 2 | 3 | 4;
+type GamePhase = "hypothesis" | "missions" | "variables" | "done";
+
+interface Mission {
+  id: number;
+  title: string;
+  question: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+  hints: [string, string, string];
+}
+
+const MISSIONS: Mission[] = [
+  {
+    id: 1,
+    title: "MISIÓN 1 — PESO DEL BARCO",
+    question:
+      "El barco que se desplaza por la rampa tiene una masa de 0,2 kg. ¿Qué peso tendría en la Tierra?",
+    options: ["A)  0,196 N", "B)  1,96 N", "C)  2 N", "D)  0,2 N"],
+    correct: 1,
+    explanation:
+      "Correcto. El peso depende de la gravedad terrestre. P = m × g = 0,2 × 9,8 = 1,96 N",
+    hints: [
+      "Recuerda la fórmula del peso: P = m × g",
+      "g = 9,8 m/s². Multiplica la masa por la gravedad terrestre.",
+      "0,2 kg × 9,8 m/s² = 1,96 N",
+    ],
+  },
+  {
+    id: 2,
+    title: "MISIÓN 2 — ALTURA DE LANZAMIENTO",
+    question:
+      "Queremos que el barco logre una energía potencial de 1 J antes de la bajada. ¿A qué altura debemos colocarlo si la masa es de 0,2 kg?",
+    options: ["A)  0,51 m", "B)  1 m", "C)  0,2 m", "D)  1,95 m"],
+    correct: 0,
+    explanation:
+      "La energía potencial depende de la altura: Ep = m × g × h → h = Ep / (m × g) = 1 / (0,2 × 9,8) ≈ 0,51 m",
+    hints: [
+      "La energía potencial se calcula con: Ep = m × g × h",
+      "Despeja h de la fórmula: h = Ep / (m × g)",
+      "h = 1 / (0,2 × 9,8) ≈ 0,51 m",
+    ],
+  },
+  {
+    id: 3,
+    title: "MISIÓN 3 — FUERZA EN LA CAÍDA",
+    question:
+      "¿Cuál es la fuerza principal que hace descender a los barcos en la gran caída de los Fiordos?",
+    options: ["A)  El motor", "B)  El agua", "C)  La gravedad", "D)  El viento"],
+    correct: 2,
+    explanation:
+      "La gravedad es la fuerza que atrae los objetos hacia la Tierra y hace descender los barcos.",
+    hints: [
+      "Piensa qué hace que los objetos caigan naturalmente sin necesidad de un motor.",
+      "Sin motor ni viento, ¿qué fuerza actúa siempre hacia abajo sobre todos los objetos?",
+      "Es la misma fuerza que hace caer una manzana desde un árbol.",
+    ],
+  },
+  {
+    id: 4,
+    title: "MISIÓN 4 — VELOCIDAD Y ALTURA",
+    question:
+      "Si la caída de los Fiordos fuera más alta, los barcos llegarían al agua:",
+    options: [
+      "A)  Más despacio",
+      "B)  Con la misma velocidad",
+      "C)  No llegarían",
+      "D)  Más rápido",
+    ],
+    correct: 3,
+    explanation:
+      "Mayor altura → mayor energía potencial → mayor energía cinética → mayor velocidad al llegar al agua.",
+    hints: [
+      "Piensa en la relación entre la energía potencial y la cinética.",
+      "Más altura → más energía potencial. Esa energía se transforma en energía cinética.",
+      "La energía cinética determina la velocidad: Ec = ½ × m × v². Mayor Ec = mayor v.",
+    ],
+  },
+  {
+    id: 5,
+    title: "MISIÓN 5 — ENERGÍA POTENCIAL",
+    question:
+      "¿Qué parte del recorrido tiene mayor energía potencial gravitatoria?",
+    options: [
+      "A)  La estación de salida",
+      "B)  La zona de frenado",
+      "C)  La parte más alta de la subida",
+      "D)  La zona de agua final",
+    ],
+    correct: 2,
+    explanation:
+      "La energía potencial gravitatoria es Ep = m × g × h. A mayor altura, mayor Ep. El punto más alto del recorrido tiene la mayor Ep.",
+    hints: [
+      "La energía potencial gravitatoria depende directamente de la altura.",
+      "Ep = m × g × h: a mayor h, mayor energía potencial.",
+      "El punto con mayor h en el recorrido tiene la mayor energía potencial gravitatoria.",
+    ],
+  },
+  {
+    id: 6,
+    title: "MISIÓN 6 — VELOCIDAD MEDIA",
+    question:
+      "El barco recorre 10 metros en 5 segundos. ¿Cuál es su velocidad media?",
+    options: ["A)  1 m/s", "B)  50 m/s", "C)  5 m/s", "D)  2 m/s"],
+    correct: 3,
+    explanation:
+      "Velocidad media v = distancia / tiempo = 10 m / 5 s = 2 m/s",
+    hints: [
+      "La velocidad media se calcula como: v = distancia / tiempo",
+      "Sustituye los valores: v = 10 m / 5 s",
+      "Divide 10 entre 5 para obtener la velocidad en m/s.",
+    ],
+  },
+  {
+    id: 7,
+    title: "MISIÓN 7 — PROYECTIL DE AGUA",
+    question:
+      "Al salir las gotas de agua, ¿qué velocidad vertical tienen en su punto más alto si inicialmente eran lanzadas a 20 m/s?",
+    options: ["A)  0 m/s", "B)  20 m/s", "C)  40 m/s", "D)  2 m/s"],
+    correct: 0,
+    explanation:
+      "En el punto más alto de una trayectoria, la componente vertical de la velocidad es siempre cero. La gota se detiene momentáneamente en vertical.",
+    hints: [
+      "En el punto más alto, ¿cuál es la componente vertical de la velocidad de la gota?",
+      "La gravedad frena la gota continuamente hasta que, en el punto más alto, la velocidad vertical llega a cero.",
+      "En el punto más alto de una trayectoria parabólica, la velocidad vertical es siempre 0 m/s.",
+    ],
+  },
+  {
+    id: 8,
+    title: "MISIÓN 8 — PRIMERA LEY DE NEWTON",
+    question:
+      "Si la fuerza resultante total sobre el barco es cero, el barco:",
+    options: [
+      "A)  Acelera",
+      "B)  Está en reposo",
+      "C)  Mantiene velocidad constante o está en reposo",
+      "D)  Mantiene únicamente velocidad constante",
+    ],
+    correct: 2,
+    explanation:
+      "Primera Ley de Newton: si la fuerza neta es cero, el objeto no cambia su estado. Puede estar en reposo o moverse a velocidad constante.",
+    hints: [
+      "Recuerda la Primera Ley de Newton (Ley de Inercia).",
+      "Si la fuerza neta es cero, el objeto no cambia su estado de movimiento.",
+      "Un objeto en reposo permanece en reposo; uno en movimiento mantiene su velocidad constante.",
+    ],
+  },
+];
+
+const VARIABLES = [
+  { id: "masa", label: "Masa" },
+  { id: "altura", label: "Altura" },
+  { id: "velocidad", label: "Velocidad" },
+  { id: "tiempo", label: "Tiempo" },
+  { id: "rozamiento", label: "Rozamiento" },
+  { id: "forma", label: "Forma del barco" },
+];
+
+const HINT_COSTS = [50, 100, 150];
+
+function getProgressValue(phase: GamePhase, missionIdx: number): number {
+  if (phase === "hypothesis") return 5;
+  if (phase === "missions")
+    return 25 + Math.round((missionIdx / MISSIONS.length) * 50);
+  if (phase === "variables") return 80;
+  return 100;
+}
+
+function getPhaseLabel(phase: GamePhase): string {
+  if (phase === "hypothesis") return "1. Hipótesis";
+  if (phase === "missions") return "2. Construcción de la rampa";
+  if (phase === "variables") return "3. Conceptos físicos";
+  return "4. Conclusión científica";
+}
 
 export default function FiordosMission() {
   const [, setLocation] = useLocation();
-  const [phase, setPhase] = React.useState<Phase>(1);
-  const [errors, setErrors] = React.useState(0);
-  const [phaseComplete, setPhaseComplete] = React.useState(false);
-  const [feedback, setFeedback] = React.useState<{type: 'error' | 'success', msg: string} | null>(null);
 
-  // Phase 2 state
-  const [p2Inc, setP2Inc] = React.useState<string | null>(null);
-  const [p2Carga, setP2Carga] = React.useState<string | null>(null);
-  const [p2Roz, setP2Roz] = React.useState<string | null>(null);
+  const [gamePhase, setGamePhase] = React.useState<GamePhase>("hypothesis");
+  const [hypothesis, setHypothesis] = React.useState("");
+  const [hypothesisSubmitted, setHypothesisSubmitted] = React.useState(false);
 
-  // Phase 3 state
-  const [p3Sensors, setP3Sensors] = React.useState<Record<string, boolean>>({
-    peso: false, rozamiento: false, motor: false, viento: false
-  });
+  const [missionIdx, setMissionIdx] = React.useState(0);
+  const [points, setPoints] = React.useState(0);
+  const [totalHintsUsed, setTotalHintsUsed] = React.useState(0);
+  const [noHintsUsed, setNoHintsUsed] = React.useState(true);
+  const [totalErrors, setTotalErrors] = React.useState(0);
+  const [correctAnswers, setCorrectAnswers] = React.useState(0);
 
-  React.useEffect(() => {
-    // Reset state on mount just in case
-    sessionStorage.setItem("gameErrors", "0");
-    sessionStorage.removeItem("gameSuccess");
-  }, []);
+  const [qHadError, setQHadError] = React.useState(false);
+  const [qHintLevel, setQHintLevel] = React.useState(0);
+  const [showHints, setShowHints] = React.useState(false);
+  const [qAnswered, setQAnswered] = React.useState(false);
 
-  const handleNextPhase = () => {
-    if (phase < 4) {
-      setPhase((p) => (p + 1) as Phase);
-      setPhaseComplete(false);
-      setFeedback(null);
+  const [feedback, setFeedback] = React.useState<{
+    type: "correct" | "wrong";
+    msg: string;
+    pts?: number;
+  } | null>(null);
+  const [flash, setFlash] = React.useState<"correct" | "wrong" | null>(null);
+  const [floatingPts, setFloatingPts] = React.useState<number | null>(null);
+
+  const [selectedVars, setSelectedVars] = React.useState<string[]>([]);
+
+  const mission = MISSIONS[missionIdx];
+
+  const triggerFlash = (type: "correct" | "wrong") => {
+    setFlash(type);
+    setTimeout(() => setFlash(null), 600);
+  };
+
+  const showFloating = (pts: number) => {
+    setFloatingPts(pts);
+    setTimeout(() => setFloatingPts(null), 1500);
+  };
+
+  const handleAnswer = (optIdx: number) => {
+    if (qAnswered) return;
+    const isCorrect = optIdx === mission.correct;
+    if (isCorrect) {
+      const earned = qHadError ? 50 : 100;
+      const sectionBonus = 200;
+      const total = earned + sectionBonus;
+      setPoints((p) => p + total);
+      setCorrectAnswers((c) => c + 1);
+      setQAnswered(true);
+      triggerFlash("correct");
+      showFloating(total);
+      setFeedback({ type: "correct", msg: mission.explanation, pts: total });
     } else {
-      sessionStorage.setItem("gameErrors", errors.toString());
-      sessionStorage.setItem("gameSuccess", "true");
-      setLocation("/fiordos/resultado");
+      setTotalErrors((e) => e + 1);
+      setQHadError(true);
+      triggerFlash("wrong");
+      setFeedback({
+        type: "wrong",
+        msg: "Respuesta incorrecta. Inténtalo de nuevo.",
+      });
+      setTimeout(() => setFeedback(null), 2000);
     }
   };
 
-  const triggerError = (msg: string) => {
-    setErrors(e => e + 1);
-    setFeedback({ type: 'error', msg });
+  const handleNextMission = () => {
+    setFeedback(null);
+    setQHadError(false);
+    setQHintLevel(0);
+    setShowHints(false);
+    setQAnswered(false);
+    if (missionIdx + 1 < MISSIONS.length) {
+      setMissionIdx((i) => i + 1);
+    } else {
+      const sectionComplete = 200;
+      setPoints((p) => p + sectionComplete);
+      setGamePhase("variables");
+    }
   };
 
-  const triggerSuccess = (msg: string) => {
-    setPhaseComplete(true);
-    setFeedback({ type: 'success', msg });
+  const handleRequestHint = () => {
+    if (qHintLevel >= 3 || qAnswered) return;
+    const cost = HINT_COSTS[qHintLevel];
+    setPoints((p) => Math.max(0, p - cost));
+    setQHintLevel((l) => l + 1);
+    setTotalHintsUsed((h) => h + 1);
+    setNoHintsUsed(false);
+    setShowHints(true);
   };
 
-  // Renderers for phases
-  const renderPhase1 = () => (
-    <div className="space-y-8 w-full max-w-2xl mx-auto">
-      <div className="p-6 bg-card border border-primary/20 rounded-sm">
-        <p className="text-lg font-sans leading-relaxed">
-          "El barco necesita energía para comenzar el recorrido. Si no es suficiente, se detendrá. Si es demasiada… el impacto será peligroso."
-        </p>
-      </div>
-      
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[10, 20, 30, 50].map((val) => (
-          <Button
-            key={val}
-            variant="outline"
-            disabled={phaseComplete}
-            onClick={() => {
-              if (val === 10 || val === 20) triggerError("El barco no tiene suficiente energía para moverse.");
-              else if (val === 50) triggerError("Demasiada energía. Riesgo de accidente.");
-              else triggerSuccess("Energía óptima. Sistema activado.");
-            }}
-            className="h-32 flex flex-col items-center justify-center font-serif text-2xl font-bold bg-background/50 border-primary/30 hover:border-primary hover:bg-primary/10 transition-colors"
-            data-testid={`btn-p1-${val}`}
-          >
-            <span>{val} m</span>
-          </Button>
-        ))}
-      </div>
-    </div>
-  );
+  const handleFinish = () => {
+    let finalPoints = points + 500;
+    if (noHintsUsed) finalPoints += 300;
+    const noErrors = totalErrors === 0;
 
-  const renderPhase2 = () => {
-    const checkPhase2 = () => {
-      if (!p2Inc || !p2Carga || !p2Roz) {
-        triggerError("Selecciona todos los parámetros.");
-        return;
-      }
-      if (p2Inc === "media" && p2Carga === "media" && p2Roz === "normal") {
-        triggerSuccess("Velocidad estabilizada.");
-      } else {
-        triggerError(
-          p2Inc === "alta" ? "Velocidad excesiva por alta inclinación." :
-          p2Inc === "baja" ? "No llega al final. Inclinación insuficiente." :
-          p2Carga !== "media" ? "La carga desestabiliza el sistema." :
-          "Fricción incorrecta. Ajusta el rozamiento."
-        );
-      }
-    };
+    sessionStorage.setItem("gamePoints", finalPoints.toString());
+    sessionStorage.setItem("gameHypothesis", hypothesis);
+    sessionStorage.setItem("gameHintsUsed", totalHintsUsed.toString());
+    sessionStorage.setItem("gameCorrectAnswers", correctAnswers.toString());
+    sessionStorage.setItem("gameTotalErrors", totalErrors.toString());
+    sessionStorage.setItem("gameNoPistas", noHintsUsed ? "true" : "false");
+    sessionStorage.setItem("gameNoErrors", noErrors ? "true" : "false");
+    sessionStorage.setItem("gameSelectedVars", selectedVars.join(","));
 
-    return (
-      <div className="space-y-8 w-full max-w-2xl mx-auto">
-        <div className="p-6 bg-card border border-accent/20 rounded-sm">
-          <p className="text-lg font-sans leading-relaxed">
-            "Estás controlando la bajada manualmente. La velocidad no puede ser ni demasiado alta ni demasiado baja."
-          </p>
-        </div>
-
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label className="font-serif text-sm tracking-widest text-muted-foreground uppercase">Inclinación</label>
-            <div className="grid grid-cols-3 gap-2">
-              {['baja', 'media', 'alta'].map(val => (
-                <Button key={val} disabled={phaseComplete} variant={p2Inc === val ? 'default' : 'outline'} onClick={() => setP2Inc(val)} className="uppercase font-serif">{val}</Button>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="font-serif text-sm tracking-widest text-muted-foreground uppercase">Carga del barco</label>
-            <div className="grid grid-cols-3 gap-2">
-              {['vacío', 'media', 'completo'].map(val => (
-                <Button key={val} disabled={phaseComplete} variant={p2Carga === val ? 'default' : 'outline'} onClick={() => setP2Carga(val)} className="uppercase font-serif">{val}</Button>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="font-serif text-sm tracking-widest text-muted-foreground uppercase">Rozamiento</label>
-            <div className="grid grid-cols-3 gap-2">
-              {['bajo', 'normal', 'alto'].map(val => (
-                <Button key={val} disabled={phaseComplete} variant={p2Roz === val ? 'default' : 'outline'} onClick={() => setP2Roz(val)} className="uppercase font-serif">{val}</Button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {!phaseComplete && (
-          <Button onClick={checkPhase2} className="w-full h-14 font-serif font-bold tracking-widest bg-accent hover:bg-accent/80 text-accent-foreground" data-testid="btn-verify-p2">
-            VERIFICAR SISTEMA
-          </Button>
-        )}
-      </div>
-    );
+    setLocation("/fiordos/resultado");
   };
 
-  const renderPhase3 = () => {
-    const toggleSensor = (k: string) => {
-      if(phaseComplete) return;
-      setP3Sensors(s => ({...s, [k]: !s[k]}));
-    };
+  const nextHintCost =
+    qHintLevel < 3 ? HINT_COSTS[qHintLevel] : null;
 
-    const checkPhase3 = () => {
-      if (p3Sensors.peso && p3Sensors.rozamiento && !p3Sensors.motor && !p3Sensors.viento) {
-        triggerSuccess("Has identificado las fuerzas reales del movimiento.");
-      } else {
-        triggerError("Sensores incorrectos. Revisa la selección.");
-      }
-    };
-
-    const sensors = [
-      { id: 'peso', label: 'PESO (GRAVEDAD)' },
-      { id: 'rozamiento', label: 'ROZAMIENTO' },
-      { id: 'motor', label: 'MOTOR DE IMPULSO' },
-      { id: 'viento', label: 'RESISTENCIA DEL VIENTO' }
-    ];
-
-    return (
-      <div className="space-y-8 w-full max-w-2xl mx-auto">
-        <div className="p-6 bg-card border border-primary/20 rounded-sm">
-          <p className="text-lg font-sans leading-relaxed">
-            "Los sensores del sistema están dañados. Necesitas activar los sensores correctos para entender qué fuerzas actúan en la caída libre."
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          {sensors.map(s => (
-            <Button
-              key={s.id}
-              disabled={phaseComplete}
-              variant={p3Sensors[s.id] ? 'default' : 'outline'}
-              onClick={() => toggleSensor(s.id)}
-              className={`h-24 font-serif font-bold tracking-wider ${p3Sensors[s.id] ? 'bg-primary text-primary-foreground shadow-[0_0_15px_rgba(0,255,255,0.4)]' : 'bg-background'}`}
-              data-testid={`sensor-${s.id}`}
-            >
-              {s.label}
-            </Button>
-          ))}
-        </div>
-
-        {!phaseComplete && (
-          <Button onClick={checkPhase3} className="w-full h-14 font-serif font-bold tracking-widest" data-testid="btn-confirm-p3">
-            CONFIRMAR SENSORES
-          </Button>
-        )}
-      </div>
-    );
-  };
-
-  const renderPhase4 = () => (
-    <div className="space-y-8 w-full max-w-2xl mx-auto">
-      <div className="p-6 bg-card border border-destructive/30 rounded-sm shadow-[0_0_20px_rgba(255,0,0,0.1)]">
-        <p className="text-lg font-sans leading-relaxed text-destructive-foreground">
-          "El barco se aproxima al agua a gran velocidad. Si no tomas la decisión correcta, el impacto será destructivo."
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          { label: 'Reducir altura', correct: false },
-          { label: 'Añadir volumen de agua', correct: true },
-          { label: 'Frenar en seco', correct: false },
-          { label: 'Quitar peso', correct: false }
-        ].map(opt => (
-          <Button
-            key={opt.label}
-            disabled={phaseComplete}
-            variant="outline"
-            onClick={() => {
-              if (opt.correct) triggerSuccess("El agua absorbe la energía y reduce la velocidad de forma segura.");
-              else {
-                triggerError("Impacto violento. Sistema dañado.");
-                sessionStorage.setItem("gameErrors", (errors + 1).toString());
-                sessionStorage.setItem("gameSuccess", "false");
-                setLocation("/fiordos/resultado");
-              }
-            }}
-            className="h-20 font-serif font-bold tracking-widest bg-background/50 border-destructive/30 hover:bg-destructive/10 hover:border-destructive uppercase"
-            data-testid={`btn-p4-${opt.label}`}
-          >
-            {opt.label}
-          </Button>
-        ))}
-      </div>
-    </div>
-  );
-
-  const phaseNames = ["ENERGÍA INICIAL", "CONTROL DE VELOCIDAD", "FUERZAS OCULTAS", "EL IMPACTO FINAL"];
+  const progressValue = getProgressValue(gamePhase, missionIdx);
+  const phaseLabel = getPhaseLabel(gamePhase);
 
   return (
     <div className="min-h-[100dvh] bg-background text-foreground flex flex-col font-sans">
-      {/* Header / HUD */}
-      <header className="border-b border-border bg-card/50 p-4 sticky top-0 z-50 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-serif tracking-widest uppercase">Misión Activa</span>
-            <span className="font-serif font-bold text-primary tracking-widest">FIORDOS</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <span className="text-xs text-muted-foreground font-serif tracking-widest uppercase block">Errores</span>
-              <span className={`font-mono font-bold ${errors > 0 ? 'text-destructive' : 'text-primary'}`}>
-                {errors.toString().padStart(2, '0')}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-4xl mx-auto mt-4">
-          <div className="flex justify-between mb-2 text-xs font-serif text-muted-foreground tracking-widest">
-            <span>FASE {phase}/4</span>
-            <span className="text-primary">{phaseNames[phase-1]}</span>
-          </div>
-          <Progress value={(phase / 4) * 100} className="h-1 bg-muted" />
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 p-6 md:p-12">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={phase}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="h-full flex flex-col justify-center"
-          >
-            {phase === 1 && renderPhase1()}
-            {phase === 2 && renderPhase2()}
-            {phase === 3 && renderPhase3()}
-            {phase === 4 && renderPhase4()}
-          </motion.div>
-        </AnimatePresence>
-      </main>
-
-      {/* Feedback Footer */}
+      {/* Flash overlay */}
       <AnimatePresence>
-        {feedback && (
+        {flash && (
           <motion.div
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            exit={{ y: 100 }}
-            className={`fixed bottom-0 left-0 w-full p-6 border-t ${feedback.type === 'error' ? 'bg-destructive/90 border-destructive' : 'bg-primary/90 border-primary'} backdrop-blur-md z-50`}
+            key={flash}
+            initial={{ opacity: 0.6 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+            className={`fixed inset-0 z-[100] pointer-events-none ${
+              flash === "correct"
+                ? "bg-green-400/30"
+                : "bg-red-500/30"
+            }`}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Floating points */}
+      <AnimatePresence>
+        {floatingPts !== null && (
+          <motion.div
+            key={floatingPts + Math.random()}
+            initial={{ opacity: 1, y: 0, scale: 1 }}
+            animate={{ opacity: 0, y: -80, scale: 1.3 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.4, ease: "easeOut" }}
+            className="fixed top-24 right-8 z-[200] pointer-events-none"
           >
-            <div className="max-w-4xl mx-auto flex items-center justify-between">
-              <div className="flex items-center space-x-4 text-black">
-                {feedback.type === 'error' ? <AlertCircle className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8" />}
-                <p className="font-serif font-bold text-lg">{feedback.msg}</p>
-              </div>
-              {feedback.type === 'success' && (
-                <Button variant="secondary" onClick={handleNextPhase} className="font-serif tracking-widest" data-testid="btn-next-phase">
-                  {phase === 4 ? 'FINALIZAR MISIÓN' : 'SIGUIENTE FASE'} <ChevronRight className="ml-2 w-4 h-4" />
-                </Button>
-              )}
-            </div>
+            <span className="font-serif font-bold text-3xl text-green-400 drop-shadow-lg">
+              +{floatingPts}
+            </span>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* HUD Header */}
+      <header className="border-b border-border bg-card/60 sticky top-0 z-50 backdrop-blur-md">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <FlaskConical className="w-5 h-5 text-primary" />
+            <div>
+              <div className="text-xs text-muted-foreground font-serif tracking-widest uppercase">
+                Joyfe Science Investigations
+              </div>
+              <div className="font-serif font-bold text-primary tracking-wider text-sm">
+                FIORDOS
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-6">
+            <div className="text-center">
+              <div className="text-xs text-muted-foreground font-serif tracking-widest">
+                🧪 PUNTOS
+              </div>
+              <div className="font-mono font-bold text-lg text-primary tabular-nums">
+                {points}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-muted-foreground font-serif tracking-widest">
+                ERRORES
+              </div>
+              <div
+                className={`font-mono font-bold ${
+                  totalErrors > 0 ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {totalErrors.toString().padStart(2, "0")}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="max-w-4xl mx-auto px-4 pb-3">
+          <div className="flex justify-between mb-1.5 text-xs font-serif text-muted-foreground tracking-widest">
+            <span>{phaseLabel}</span>
+            <span className="text-primary">{progressValue}%</span>
+          </div>
+          <Progress value={progressValue} className="h-1.5 bg-muted" />
+          <div className="flex justify-between mt-1.5">
+            {["Hipótesis", "Rampa", "Conceptos", "Conclusión"].map(
+              (label, i) => (
+                <span
+                  key={label}
+                  className={`text-[10px] font-serif tracking-wider ${
+                    (gamePhase === "hypothesis" && i === 0) ||
+                    (gamePhase === "missions" && i === 1) ||
+                    (gamePhase === "variables" && i === 2) ||
+                    (gamePhase === "done" && i === 3)
+                      ? "text-primary"
+                      : "text-muted-foreground/40"
+                  }`}
+                >
+                  {label}
+                </span>
+              )
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main content */}
+      <main className="flex-1 p-6 md:p-10 max-w-3xl mx-auto w-full">
+        <AnimatePresence mode="wait">
+          {/* ── PHASE: HYPOTHESIS ── */}
+          {gamePhase === "hypothesis" && (
+            <motion.div
+              key="hypothesis"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <div className="space-y-2">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground tracking-widest uppercase">
+                  Fase 1 — Hipótesis
+                </h2>
+                <div className="h-px bg-primary/30 w-full" />
+              </div>
+
+              <div className="p-6 bg-primary/5 border border-primary/20 rounded-sm">
+                <p className="text-lg font-sans leading-relaxed text-foreground">
+                  ¿Por qué crees que unas veces los Fiordos salpican más que
+                  otras?
+                </p>
+              </div>
+
+              {!hypothesisSubmitted ? (
+                <div className="space-y-4">
+                  <Textarea
+                    value={hypothesis}
+                    onChange={(e) => setHypothesis(e.target.value)}
+                    placeholder="Escribe aquí tu hipótesis inicial..."
+                    className="min-h-[140px] font-sans text-base bg-card/50 border-border/60 resize-none focus:border-primary/60 transition-colors"
+                  />
+                  <Button
+                    onClick={() => {
+                      if (hypothesis.trim().length < 5) return;
+                      setHypothesisSubmitted(true);
+                    }}
+                    disabled={hypothesis.trim().length < 5}
+                    className="w-full h-12 font-serif font-bold tracking-widest bg-primary hover:bg-primary/80 text-primary-foreground"
+                  >
+                    REGISTRAR HIPÓTESIS
+                  </Button>
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="space-y-6"
+                >
+                  <div className="p-5 border border-green-500/30 bg-green-500/5 rounded-sm flex items-start space-x-4">
+                    <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-serif font-bold text-green-400 tracking-wider mb-2">
+                        Hipótesis registrada correctamente.
+                      </p>
+                      <p className="text-sm text-foreground/70 font-sans italic">
+                        "{hypothesis}"
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => setGamePhase("missions")}
+                    className="w-full h-12 font-serif font-bold tracking-widest"
+                  >
+                    CONTINUAR <ChevronRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
+          {/* ── PHASE: MISSIONS ── */}
+          {gamePhase === "missions" && (
+            <motion.div
+              key={`mission-${missionIdx}`}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              className="space-y-6"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-serif font-bold text-accent tracking-widest uppercase">
+                    {mission.title}
+                  </h2>
+                  <span className="text-xs font-serif text-muted-foreground">
+                    {missionIdx + 1} / {MISSIONS.length}
+                  </span>
+                </div>
+                <div className="h-px bg-accent/30 w-full" />
+              </div>
+
+              <div className="p-5 bg-card/50 border border-border/60 rounded-sm">
+                <p className="text-base md:text-lg font-sans leading-relaxed text-foreground">
+                  {mission.question}
+                </p>
+              </div>
+
+              {/* Answer options */}
+              <div className="grid grid-cols-1 gap-3">
+                {mission.options.map((opt, i) => {
+                  const isCorrect = i === mission.correct;
+                  const showResult = qAnswered;
+                  return (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      disabled={qAnswered}
+                      onClick={() => handleAnswer(i)}
+                      className={`h-auto py-4 px-5 text-left justify-start font-sans text-base transition-all duration-200
+                        ${
+                          showResult && isCorrect
+                            ? "border-green-500 bg-green-500/10 text-green-400"
+                            : "border-border/50 bg-background/50 hover:border-primary/60 hover:bg-primary/5"
+                        }`}
+                    >
+                      {showResult && isCorrect && (
+                        <CheckCircle2 className="mr-3 h-5 w-5 text-green-400 flex-shrink-0" />
+                      )}
+                      {opt}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              {/* Hint system */}
+              {!qAnswered && (
+                <div className="space-y-3">
+                  <Button
+                    variant="ghost"
+                    disabled={qHintLevel >= 3}
+                    onClick={handleRequestHint}
+                    className="font-sans text-sm text-muted-foreground hover:text-foreground border border-dashed border-border/40 hover:border-border w-full h-10"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    🔍 PEDIR PISTA
+                    {nextHintCost !== null && (
+                      <span className="ml-2 text-destructive font-bold">
+                        (−{nextHintCost} pts)
+                      </span>
+                    )}
+                    {qHintLevel >= 3 && (
+                      <span className="ml-2 text-muted-foreground/50">
+                        (sin más pistas)
+                      </span>
+                    )}
+                  </Button>
+
+                  <AnimatePresence>
+                    {showHints && qHintLevel > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="space-y-2 p-4 bg-card/30 border border-primary/10 rounded-sm">
+                          {mission.hints.slice(0, qHintLevel).map((hint, i) => (
+                            <motion.div
+                              key={i}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.1 }}
+                              className="flex items-start space-x-2"
+                            >
+                              <span className="text-primary text-sm flex-shrink-0 font-serif">
+                                Pista {i + 1}:
+                              </span>
+                              <span className="text-sm text-foreground/80 font-sans">
+                                {hint}
+                              </span>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Success feedback */}
+              <AnimatePresence>
+                {feedback && feedback.type === "correct" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="p-5 border border-green-500/40 bg-green-500/8 rounded-sm space-y-4"
+                  >
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-serif font-bold text-green-400 tracking-wider">
+                          ¡CORRECTO! +{feedback.pts} puntos
+                        </p>
+                        <p className="text-sm text-foreground/80 font-sans leading-relaxed">
+                          {feedback.msg}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handleNextMission}
+                      className="w-full h-11 font-serif font-bold tracking-widest bg-green-600 hover:bg-green-600/80 text-white"
+                    >
+                      {missionIdx + 1 < MISSIONS.length
+                        ? "SIGUIENTE MISIÓN"
+                        : "CONTINUAR"}{" "}
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Error feedback (auto-dismissing) */}
+              <AnimatePresence>
+                {feedback && feedback.type === "wrong" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="p-4 border border-destructive/40 bg-destructive/8 rounded-sm flex items-center space-x-3"
+                  >
+                    <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
+                    <p className="text-sm font-sans text-foreground/90">
+                      {feedback.msg}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* ── PHASE: VARIABLES ── */}
+          {gamePhase === "variables" && (
+            <motion.div
+              key="variables"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              <div className="space-y-2">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-foreground tracking-widest uppercase">
+                  Fase 3 — Conceptos Físicos
+                </h2>
+                <div className="h-px bg-primary/30 w-full" />
+              </div>
+
+              <div className="p-5 bg-card/50 border border-border/60 rounded-sm">
+                <p className="text-base md:text-lg font-sans leading-relaxed text-foreground">
+                  Selecciona qué variables crees que podrían influir en la
+                  salpicadura de los Fiordos. Puedes elegir más de una.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {VARIABLES.map((v) => {
+                  const selected = selectedVars.includes(v.id);
+                  return (
+                    <Button
+                      key={v.id}
+                      variant="outline"
+                      onClick={() =>
+                        setSelectedVars((prev) =>
+                          selected
+                            ? prev.filter((x) => x !== v.id)
+                            : [...prev, v.id]
+                        )
+                      }
+                      className={`h-20 font-serif font-bold tracking-wider transition-all ${
+                        selected
+                          ? "bg-primary/15 border-primary text-primary shadow-[0_0_12px_rgba(0,255,255,0.2)]"
+                          : "bg-background/50 border-border/50 hover:border-primary/50"
+                      }`}
+                    >
+                      {v.label}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              <div className="p-5 bg-accent/5 border border-accent/20 rounded-sm">
+                <p className="text-sm font-sans text-foreground/80 leading-relaxed">
+                  💡 Durante el experimento real comprobarás cuál de estas
+                  variables es la responsable principal del fenómeno.
+                </p>
+              </div>
+
+              <Button
+                onClick={handleFinish}
+                disabled={selectedVars.length === 0}
+                size="lg"
+                className="w-full h-14 font-serif font-bold tracking-widest text-lg bg-primary hover:bg-primary/80 text-primary-foreground shadow-[0_0_20px_rgba(0,255,255,0.25)]"
+              >
+                COMPLETAR INVESTIGACIÓN <ChevronRight className="ml-2 h-5 w-5" />
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
     </div>
   );
 }

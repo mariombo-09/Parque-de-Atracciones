@@ -1,0 +1,438 @@
+# ACTUALIZACIÓN DE LA EXPERIENCIA FIORDOS
+
+## INSTRUCCIÓN CRÍTICA
+
+NO modificar absolutamente nada de lo siguiente:
+
+* Pantalla de inicio.
+* Portada.
+* Diseño principal de la aplicación.
+* Mapa interactivo.
+* Sistema de navegación.
+* Marcadores del mapa.
+* Atracciones bloqueadas.
+* Funcionamiento del marcador Fiordos.
+
+Todo eso debe permanecer exactamente igual.
+
+ÚNICAMENTE modificar el contenido que aparece cuando el usuario pulsa sobre el marcador de la atracción FIORDOS.
+
+---
+
+# NUEVO CONCEPTO
+
+La experiencia ya no debe consistir únicamente en responder preguntas.
+
+Debe convertirse en una misión de investigación científica gamificada.
+
+Los alumnos forman parte de una organización llamada:
+
+## JOYFE SCIENCE INVESTIGATIONS
+
+Una unidad científica encargada de investigar fenómenos físicos que ocurren en el Parque de Atracciones.
+
+---
+
+# NUEVA INTRODUCCIÓN
+
+Al pulsar sobre FIORDOS debe aparecer una pantalla narrativa.
+
+Texto:
+
+"Departamento de Investigación Científica Joyfe"
+
+"Se ha detectado una anomalía en la atracción Fiordos."
+
+"Los visitantes afirman que algunas veces la atracción genera enormes salpicaduras y otras veces apenas levanta agua."
+
+"Tu equipo ha sido enviado para investigar la causa."
+
+"Como científico deberás formular una hipótesis, recopilar datos y descubrir qué variable es responsable del fenómeno."
+
+Botón:
+
+COMENZAR INVESTIGACIÓN
+
+---
+
+# SISTEMA DE PUNTOS
+
+Añadir un sistema de puntuación visible durante toda la experiencia.
+
+Nombre:
+
+Puntos de Investigación
+
+Icono:
+
+🧪
+
+Comenzar con 0 puntos.
+
+---
+
+# RECOMPENSAS
+
+Pregunta acertada al primer intento:
++100 puntos
+
+Pregunta acertada tras fallar:
++50 puntos
+
+Completar una sección:
++200 puntos
+
+Completar toda la misión:
++500 puntos
+
+Finalizar sin usar pistas:
++300 puntos extra
+
+---
+
+# SISTEMA DE PISTAS
+
+Añadir botón:
+
+🔍 PEDIR PISTA
+
+Las pistas consumen puntos.
+
+Primera pista:
+-50 puntos
+
+Segunda pista:
+-100 puntos
+
+Tercera pista:
+-150 puntos
+
+Las pistas deben adaptarse automáticamente a cada pregunta.
+
+Nunca revelar directamente la respuesta en la primera pista.
+
+---
+
+# BARRA DE PROGRESO
+
+Mostrar siempre una barra de progreso.
+
+Fases:
+
+1. Hipótesis
+2. Construcción de la rampa
+3. Conceptos físicos
+4. Conclusión científica
+
+Mostrar porcentaje completado.
+
+---
+
+# FASE 1 - HIPÓTESIS
+
+Antes de cualquier pregunta.
+
+Mostrar:
+
+"¿Por qué crees que unas veces los Fiordos salpican más que otras?"
+
+Añadir cuadro de texto.
+
+Guardar la respuesta del alumno.
+
+No corregirla.
+
+Mostrar mensaje:
+
+"Hipótesis registrada correctamente."
+
+Botón:
+
+CONTINUAR
+
+---
+
+# FASE 2 - CONSTRUCCIÓN DE LA RAMPA
+
+Narrativa:
+
+"Para poner a prueba tu hipótesis necesitas construir una réplica funcional de los Fiordos."
+
+"Para ello deberás resolver varios desafíos científicos."
+
+Convertir cada pregunta en una misión independiente.
+
+---
+
+# MISIÓN 1
+
+Pregunta:
+
+El barco que se desplaza por la rampa tiene una masa de 0,2 kg.
+
+¿Qué peso tendría en la Tierra?
+
+Opciones:
+
+A) 0,196 N
+
+B) 1,96 N ✅
+
+C) 2 N
+
+D) 0,2 N
+
+Explicación al acertar:
+
+"Correcto. El peso depende de la gravedad terrestre."
+
+---
+
+# MISIÓN 2
+
+Pregunta:
+
+Tras unos cálculos queremos que el barco logre una energía de 1 J antes de la bajada.
+
+¿A qué altura debemos colocarlo si la masa es de 0,2 kg?
+
+Opciones:
+
+A) 0,51 m ✅
+
+B) 1 m
+
+C) 0,2 m
+
+D) 1,95 m
+
+Explicación:
+
+"La energía potencial depende de la altura."
+
+---
+
+# MISIÓN 3
+
+Pregunta:
+
+¿Cuál es la fuerza principal que hace descender a los barcos en la gran caída de los Fiordos?
+
+Opciones:
+
+A) El motor
+
+B) El agua
+
+C) La gravedad ✅
+
+D) El viento
+
+---
+
+# MISIÓN 4
+
+Pregunta:
+
+Si la caída de los Fiordos fuera más alta, los barcos llegarían al agua:
+
+Opciones:
+
+A) Más despacio
+
+B) Con la misma velocidad
+
+C) No llegarían
+
+D) Más rápido ✅
+
+---
+
+# MISIÓN 5
+
+Pregunta:
+
+¿Qué parte del recorrido tiene mayor energía potencial gravitatoria?
+
+Opciones:
+
+A) La estación
+
+B) La zona de frenado
+
+C) La parte más alta de la subida ✅
+
+D) La zona de agua final
+
+---
+
+# MISIÓN 6
+
+Pregunta:
+
+El barco recorre 10 metros en 5 segundos.
+
+¿Cuál es su velocidad media?
+
+Opciones:
+
+A) 1 m/s
+
+B) 50 m/s
+
+C) 5 m/s
+
+D) 2 m/s ✅
+
+---
+
+# MISIÓN 7
+
+Pregunta:
+
+Al salir las gotas de agua, ¿qué velocidad tienen en su punto más alto si inicialmente eran lanzadas a 20 m/s?
+
+Opciones:
+
+A) 0 m/s ✅
+
+B) 20 m/s
+
+C) 40 m/s
+
+D) 2 m/s
+
+---
+
+# MISIÓN 8
+
+Pregunta:
+
+Si la fuerza total sobre el barco es cero:
+
+Opciones:
+
+A) Acelera
+
+B) Está en reposo
+
+C) Mantiene velocidad constante o está en reposo ✅
+
+D) Mantiene una velocidad constante
+
+---
+
+# EFECTOS VISUALES
+
+Respuesta correcta:
+
+* Destello verde.
+* Animación de éxito.
+* Sonido de acierto.
+* Texto flotante con puntos obtenidos.
+
+Respuesta incorrecta:
+
+* Destello rojo.
+* Sonido de error.
+* Mensaje explicativo.
+
+---
+
+# FASE 3 - CONCEPTOS FÍSICOS
+
+Mostrar un panel final donde el alumno debe seleccionar qué variables podrían influir en la salpicadura.
+
+Opciones:
+
+* Masa
+* Altura
+* Velocidad
+* Tiempo
+* Rozamiento
+* Forma del barco
+
+Permitir seleccionar varias.
+
+Después mostrar:
+
+"Durante el experimento real comprobarás cuál de estas variables es la responsable principal del fenómeno."
+
+NO mostrar todavía la solución.
+
+NO incluir ningún experimento virtual.
+
+NO simular barcos.
+
+NO simular salpicaduras.
+
+El experimento se realizará físicamente fuera de la aplicación.
+
+---
+
+# FASE FINAL - CONCLUSIÓN
+
+Mostrar una pantalla de cierre.
+
+Texto:
+
+"Has completado la investigación preliminar."
+
+"Ya estás preparado para realizar el experimento real en los Fiordos."
+
+Mostrar:
+
+* Hipótesis inicial.
+* Puntuación obtenida.
+* Número de pistas utilizadas.
+* Porcentaje de aciertos.
+
+---
+
+# SISTEMA DE RANGOS
+
+0-1000 puntos
+
+🔧 Aprendiz de Investigador
+
+1001-1800 puntos
+
+🧪 Científico Junior
+
+1801-2500 puntos
+
+🚀 Científico Senior
+
+2501-3200 puntos
+
+🏆 Experto en Física
+
+Más de 3200 puntos
+
+👑 Director Científico Joyfe
+
+---
+
+# LOGROS
+
+Añadir insignias desbloqueables:
+
+🏅 Sin errores
+
+🏅 Sin pistas
+
+🏅 Velocista
+
+🏅 Científico Perfecto
+
+🏅 Maestro de Fiordos
+
+---
+
+# REQUISITO FINAL
+
+Mantener el estilo visual actual de la aplicación.
+
+Mantener todos los colores, animaciones y diseño existentes.
+
+La actualización debe sentirse como una ampliación del juego actual, no como una aplicación nueva.
