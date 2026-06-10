@@ -26,7 +26,7 @@ export const ACTIVITIES: Activity[] = [
     title: "Tifón",
     type: "html",
     src: "/actividades/tifon.html",
-    position: { left: "28%", top: "28%" },
+    position: { left: "22%", top: "50%" },
   },
   {
     // ACTIVIDAD 2 — Lanzadera (Genially)
