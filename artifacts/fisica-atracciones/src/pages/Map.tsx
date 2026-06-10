@@ -1,10 +1,15 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Lock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ChevronLeft, Lock } from "lucide-react";
+import { ACTIVITIES, Activity } from "@/data/activities";
+import ActivityModal from "@/components/ActivityModal";
 
 export default function Map() {
+  const [activeActivity, setActiveActivity] = useState<Activity | null>(null);
+
   return (
     <div className="min-h-[100dvh] w-full bg-background relative overflow-hidden flex flex-col">
       <div className="absolute top-0 left-0 w-full p-6 z-20 flex justify-between items-center pointer-events-none">
@@ -45,12 +50,68 @@ export default function Map() {
           </motion.button>
         </Link>
 
+        {/* ── ACTIVIDADES INTERACTIVAS ─────────────────────────────────────────
+            Las posiciones de cada punto se configuran en:
+            src/data/activities.ts → campo position: { left, top }
+        ──────────────────────────────────────────────────────────────────── */}
+        {ACTIVITIES.map((activity, idx) => (
+          <ActivityMarker
+            key={activity.id}
+            activity={activity}
+            index={idx}
+            onClick={() => setActiveActivity(activity)}
+          />
+        ))}
+
         {/* Locked Markers */}
         <LockedMarker left="60%" top="30%" />
         <LockedMarker left="40%" top="70%" />
         <LockedMarker left="75%" top="60%" />
       </div>
+
+      {/* Modal de actividad */}
+      {activeActivity && (
+        <ActivityModal
+          activity={activeActivity}
+          onClose={() => setActiveActivity(null)}
+        />
+      )}
     </div>
+  );
+}
+
+interface ActivityMarkerProps {
+  activity: Activity;
+  index: number;
+  onClick: () => void;
+}
+
+function ActivityMarker({ activity, index, onClick }: ActivityMarkerProps) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <motion.button
+          className="absolute z-20 flex flex-col items-center justify-center group cursor-pointer"
+          style={{ left: activity.position.left, top: activity.position.top }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1 * index, type: "spring", stiffness: 260, damping: 20 }}
+          onClick={onClick}
+          aria-label={`Abrir actividad: ${activity.title}`}
+        >
+          <span className="bg-accent/20 border border-accent text-accent px-3 py-1 mb-2 text-xs font-serif font-bold tracking-widest backdrop-blur-md shadow-[0_0_12px_rgba(255,140,0,0.4)] group-hover:bg-accent group-hover:text-accent-foreground transition-colors uppercase whitespace-nowrap">
+            {activity.title}
+          </span>
+          <div className="relative flex h-6 w-6 items-center justify-center">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-accent shadow-[0_0_8px_rgba(255,140,0,0.8)]"></span>
+          </div>
+        </motion.button>
+      </TooltipTrigger>
+      <TooltipContent className="bg-card border-border font-sans">
+        <p>Abrir: {activity.title}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 

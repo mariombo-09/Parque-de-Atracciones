@@ -1,0 +1,142 @@
+MODIFICACIÓN DEL MAPA INTERACTIVO
+
+Quiero que añadas un sistema de 8 puntos interactivos sobre el mapa existente.
+
+IMPORTANTE:
+
+NO modifiques ninguna funcionalidad existente.
+
+NO elimines código.
+
+NO cambies estilos existentes.
+
+NO reestructures el proyecto.
+
+NO alteres ningún comportamiento actual.
+
+ÚNICAMENTE añade las nuevas funcionalidades necesarias para incorporar las actividades.
+
+Las actividades deben abrirse dentro de la propia web mediante un modal o visor integrado.
+
+NO abrir nuevas pestañas.
+
+NO descargar archivos.
+
+NO sacar al usuario de la página principal.
+
+ACTIVIDAD 1
+
+Crear una nueva actividad llamada "Tifón".
+
+Voy a adjuntar un archivo HTML.
+
+La actividad debe cargar exactamente ese HTML y visualizarlo dentro del sistema de actividades.
+
+No modificar su contenido salvo que sea imprescindible para la integración.
+
+ACTIVIDAD 2
+
+Título: Lanzadera
+
+URL:
+
+https://view.genially.com/6a2012c873ae9c9ae709a222
+
+Debe visualizarse embebida dentro del modal.
+
+ACTIVIDAD 3
+
+Título: Abismo
+
+URL:
+
+https://view.genially.com/6a2279a39d09f2c86ee2e11b
+
+Debe visualizarse embebida dentro del modal.
+
+ACTIVIDAD 4
+
+Título: La Máquina
+
+URL:
+
+https://view.genially.com/6a211ed0f732793a218d25ec
+
+Debe visualizarse embebida dentro del modal.
+
+ACTIVIDAD 5
+
+Voy a adjuntar un PDF.
+
+Crear un visor PDF integrado dentro del modal para visualizar dicho archivo.
+
+ACTIVIDAD 6
+
+Crear una actividad basada en un enlace web.
+
+Utilizar temporalmente:
+
+https://google.com
+
+ACTIVIDAD 7
+
+Crear una actividad basada en un enlace web.
+
+Utilizar temporalmente:
+
+https://google.com
+
+ACTIVIDAD 8
+
+Crear una actividad basada en un enlace web.
+
+Utilizar temporalmente:
+
+https://google.com
+
+CONFIGURACIÓN
+
+Toda la configuración de actividades debe quedar centralizada y claramente identificada para que posteriormente pueda modificar:
+
+* Nombre de la actividad.
+* Tipo de actividad.
+* URL.
+* Archivo HTML.
+* Archivo PDF.
+* Posición de cada punto.
+
+Quiero que las coordenadas de cada punto estén claramente visibles y comentadas para poder moverlas fácilmente sobre el mapa sin buscar por el proyecto.
+
+INTERFAZ
+
+Los puntos deben ser clicables.
+
+Debe mostrarse el nombre de la actividad al pasar el ratón.
+
+El modal debe incluir:
+
+* Título.
+* Botón de cierre.
+* Área de visualización responsive.
+* Compatibilidad con ordenador y móvil.
+
+INFORME FINAL
+
+Cuando termines, indícame directamente en el chat:
+
+* Qué archivos has creado.
+* Qué archivos has modificado.
+* En qué archivo se cambian las posiciones de los puntos.
+* En qué archivo se cambian los enlaces.
+* En qué archivo se cambia el PDF.
+* En qué archivo se cambia el HTML del Tifón.
+
+GITHUB
+
+Una vez comprobado que todo funciona correctamente:
+
+* Realiza commit de los cambios.
+* Realiza push al repositorio GitHub ya configurado.
+* Verifica que no existen errores de compilación o despliegue.
+* Si aparece algún error, corrígelo antes de finalizar.
+* Entrega el resultado final con el repositorio actualizado.

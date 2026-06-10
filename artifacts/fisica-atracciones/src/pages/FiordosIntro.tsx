@@ -28,13 +28,22 @@ export default function FiordosIntro() {
       />
 
       {/* Header */}
-      <div className="p-6 relative z-10">
+      <div className="p-6 relative z-10 flex items-center justify-between">
         <Link href="/mapa">
           <Button
             variant="ghost"
             className="text-muted-foreground hover:text-foreground font-serif tracking-wider"
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> VOLVER
+          </Button>
+        </Link>
+        <Link href="/mapa">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-background/50 backdrop-blur-md border-primary/30 text-primary hover:text-primary hover:bg-primary/20 font-serif tracking-widest text-xs uppercase"
+          >
+            <ChevronLeft className="mr-1.5 h-3.5 w-3.5" /> SALIR AL MAPA
           </Button>
         </Link>
       </div>

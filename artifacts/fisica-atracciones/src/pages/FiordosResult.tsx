@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Map as MapIcon, FlaskConical } from "lucide-react";
+import { RotateCcw, Map as MapIcon, FlaskConical, ChevronLeft } from "lucide-react";
 
 interface Achievement {
   id: string;
@@ -97,7 +97,7 @@ export default function FiordosResult() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-background text-foreground flex flex-col items-center justify-start p-6 pt-10 relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-background text-foreground flex flex-col items-center justify-start p-6 pt-4 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,200,255,0.07),_transparent_70%)] pointer-events-none" />
       <div
@@ -107,6 +107,19 @@ export default function FiordosResult() {
             "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E')",
         }}
       />
+
+      {/* Botón Salir al mapa — arriba a la derecha */}
+      <div className="relative z-10 w-full max-w-2xl flex justify-end mb-2">
+        <Link href="/mapa">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-background/50 backdrop-blur-md border-primary/30 text-primary hover:text-primary hover:bg-primary/20 font-serif tracking-widest text-xs uppercase"
+          >
+            <ChevronLeft className="mr-1.5 h-3.5 w-3.5" /> SALIR AL MAPA
+          </Button>
+        </Link>
+      </div>
 
       <motion.div
         variants={container}

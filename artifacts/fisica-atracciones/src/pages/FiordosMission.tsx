@@ -7,9 +7,11 @@ import {
   CheckCircle2,
   AlertCircle,
   ChevronRight,
+  ChevronLeft,
   Search,
   FlaskConical,
 } from "lucide-react";
+import { Link } from "wouter";
 import React from "react";
 
 type GamePhase = "hypothesis" | "missions" | "variables" | "done";
@@ -357,7 +359,7 @@ export default function FiordosMission() {
               </div>
             </div>
           </div>
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
             <div className="text-center">
               <div className="text-xs text-muted-foreground font-serif tracking-widest">
                 🧪 PUNTOS
@@ -378,6 +380,15 @@ export default function FiordosMission() {
                 {totalErrors.toString().padStart(2, "0")}
               </div>
             </div>
+            <Link href="/mapa">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-background/50 border-primary/30 text-primary hover:text-primary hover:bg-primary/20 font-serif tracking-widest text-xs uppercase hidden sm:flex"
+              >
+                <ChevronLeft className="mr-1 h-3 w-3" /> MAPA
+              </Button>
+            </Link>
           </div>
         </div>
 

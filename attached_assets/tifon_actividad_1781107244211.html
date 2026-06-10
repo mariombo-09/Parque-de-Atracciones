@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Tifón — Actividad de Energía</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #e0f4ff;
+    --sky-mid: #b8e4f9;
+    --sky-dark: #5aabd4;
+    --track: #5a6a7a;
+    --gondola-fill: #d94f6e;
+    --gondola-ring: #a83050;
+    --seat: #f9c74f;
+    --kinetic: #1aaa6b;
+    --potential: #3b82f6;
+    --bg: #f0f8ff;
+    --card-bg: #ffffff;
+    --text: #1a2535;
+    --muted: #6b7d96;
+    --accent: #ff6b35;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(160deg, #0a1628 0%, #1b3a6b 60%, #2d6fa8 100%);
+    padding: 2rem 1.5rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 40px;
+    background: var(--bg);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .header-tag {
+    display: inline-block;
+    background: rgba(255,107,53,0.2);
+    color: #ff9d6e;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,107,53,0.4);
+    margin-bottom: 0.75rem;
+  }
+  header h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  header h1 span { color: #ff9d6e; }
+  header p {
+    margin-top: 0.6rem;
+    font-size: clamp(13px, 2vw, 16px);
+    color: rgba(255,255,255,0.65);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    padding: 1.2rem 1rem;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+  }
+
+  /* MAIN GRID */
+  .scenes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 1.2rem 1.5rem;
+  }
+
+  .scene-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 2px solid #e2ecf7;
+    padding: 18px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.3s;
+  }
+  .scene-card.correct { border-color: #1aaa6b; background: #f0fff8; }
+  .scene-card.wrong   { border-color: #e24b4a; background: #fff5f5; }
+
+  .scene-num {
+    align-self: flex-start;
+    background: #1b3a6b;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    text-align: center;
+  }
+  .scene-sub {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.4;
+    max-width: 200px;
+  }
+
+  /* SVG ride illustration */
+  .ride-svg-wrap {
+    width: 100%;
+    max-width: 220px;
+  }
+
+  /* BARS */
+  .bars-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+  }
+  .bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    max-width: 90px;
+  }
+  .bar-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .bar-label.k { color: #0f7a4e; }
+  .bar-label.p { color: #1d4ed8; }
+
+  .bar-track {
+    width: 44px;
+    height: 100px;
+    background: #f0f4fa;
+    border: 1.5px solid #d0dcea;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    transition: border-color 0.15s;
+  }
+  .bar-track:hover { border-color: #94aec8; }
+  .bar-track:active { transform: scale(0.96); }
+
+  /* tick marks */
+  .bar-track::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; right: 6px;
+    width: 6px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 19px,
+      #d0dcea 19px,
+      #d0dcea 20px
+    );
+  }
+
+  .bar-fill {
+    width: 100%;
+    border-radius: 10px;
+    transition: height 0.25s cubic-bezier(.34,1.4,.64,1);
+  }
+  .bar-fill.k { background: #1aaa6b; }
+  .bar-fill.p { background: #3b82f6; }
+
+  .bar-pct {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .bar-pct.k { color: #0f7a4e; }
+  .bar-pct.p { color: #1d4ed8; }
+
+  .hint-click {
+    font-size: 10px;
+    color: #aab8cc;
+    text-align: center;
+  }
+
+  /* BOTTOM PANEL */
+  .bottom {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 1.2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+  }
+  .feedback {
+    width: 100%;
+    max-width: 680px;
+    background: #fff;
+    border: 1.5px solid #e2ecf7;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    min-height: 52px;
+  }
+  .feedback.success { border-color: #1aaa6b; color: #0a6040; background: #f0fff8; font-weight: 600; }
+  .feedback.partial { border-color: #f59e0b; color: #92400e; background: #fffbeb; }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+  }
+  button {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 28px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.1s, background 0.15s;
+  }
+  button:active { transform: scale(0.97); }
+  .btn-reset {
+    background: #fff;
+    border-color: #d0dcea;
+    color: var(--muted);
+  }
+  .btn-reset:hover { background: #f0f4fa; }
+  .btn-check {
+    background: #1b3a6b;
+    color: #fff;
+  }
+  .btn-check:hover { background: #122956; }
+
+  /* INFO BOX */
+  .info-strip {
+    max-width: 980px;
+    margin: 0 auto 1.5rem;
+    padding: 0 1.2rem;
+  }
+  .info-box {
+    background: #fff;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .info-box strong { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .scenes { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Parque de Atracciones de Madrid</div>
+  <h1>El <span>Tifón</span></h1>
+  <p>Zamperla Disk'O Coaster · Góndola circular para 40 personas</p>
+</header>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#1aaa6b;"></div>
+    Energía cinética
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#3b82f6;"></div>
+    Energía potencial
+  </div>
+</div>
+
+<div class="info-strip">
+  <div class="info-box">
+    <strong>¿Cómo funciona?</strong> La góndola circular se desliza sobre un raíl en forma de U y gira sobre su eje a 9,5 rpm. Sin cuerdas ni cables: las ruedas guía permanecen en contacto continuo con el raíl mediante la <strong>Fuerza Normal</strong>. Haz clic en las barras para ajustar la energía en cada punto y comprueba tu respuesta.
+  </div>
+</div>
+
+<div class="scenes" id="scenes"></div>
+
+<div class="bottom">
+  <div class="feedback" id="feedback">Ajusta los niveles de energía en los tres puntos y pulsa <strong>Comprobar</strong>.</div>
+  <div class="btn-row">
+    <button class="btn-reset" onclick="resetAll()">↺ Reiniciar</button>
+    <button class="btn-check" onclick="checkAnswers()">Comprobar ✓</button>
+  </div>
+</div>
+
+<script>
+const scenes = [
+  {
+    id: 0,
+    num: '1',
+    title: 'Punto más bajo',
+    sub: 'La góndola está en el fondo del raíl en U. Máxima velocidad, mínima altura.',
+    phase: 'bottom',
+    correctK: 100,
+    correctP: 0
+  },
+  {
+    id: 1,
+    num: '2',
+    title: 'Punto más alto',
+    sub: 'La góndola llega al extremo superior del raíl. Se detiene momentáneamente.',
+    phase: 'top',
+    correctK: 0,
+    correctP: 100
+  },
+  {
+    id: 2,
+    num: '3',
+    title: 'Punto medio',
+    sub: 'La góndola está a mitad de camino entre el fondo y el extremo.',
+    phase: 'mid',
+    correctK: 50,
+    correctP: 50
+  }
+];
+
+const userK = [50, 50, 50];
+const userP = [50, 50, 50];
+const steps = [0, 25, 50, 75, 100];
+
+function nextStep(val) {
+  const i = steps.indexOf(val);
+  return steps[(i + 1) % steps.length];
+}
+
+// ── SVG illustrations ──────────────────────────────────────────────
+function makeSVG(phase) {
+  const W = 220, H = 140;
+  // Rail U-shape path
+  const railPath = `M 20,20 Q 20,110 110,115 Q 200,110 200,20`;
+
+  // Gondola position on rail
+  let gx, gy, gondolaAngle, labelTxt;
+  if (phase === 'bottom') {
+    gx = 110; gy = 115; gondolaAngle = 0;
+  } else if (phase === 'top') {
+    gx = 200; gy = 20; gondolaAngle = -35;
+  } else {
+    gx = 163; gy = 72; gondolaAngle = -22;
+  }
+
+  // Disk'O gondola: outer ring + seats around perimeter
+  const R = 22; // ring radius
+  const nSeats = 10;
+  let seats = '';
+  for (let i = 0; i < nSeats; i++) {
+    const a = (i / nSeats) * 2 * Math.PI;
+    const sx = R * Math.cos(a);
+    const sy = R * Math.sin(a);
+    seats += `<rect x="${sx - 3}" y="${sy - 4}" width="6" height="8" rx="2" fill="#f9c74f" transform="rotate(${(i/nSeats)*360})" />`;
+  }
+
+  // Speed indicator arrows for bottom
+  let speedArrows = '';
+  if (phase === 'bottom') {
+    speedArrows = `
+      <g opacity="0.55">
+        <line x1="60" y1="125" x2="42" y2="125" stroke="#1aaa6b" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="42,122 35,125 42,128" fill="#1aaa6b"/>
+        <line x1="160" y1="125" x2="178" y2="125" stroke="#1aaa6b" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="178,122 185,125 178,128" fill="#1aaa6b"/>
+      </g>`;
+  }
+
+  // Height indicator for top
+  let heightLine = '';
+  if (phase === 'top') {
+    heightLine = `
+      <line x1="210" y1="20" x2="210" y2="115" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5"/>
+      <text x="214" y="70" font-size="10" fill="#3b82f6" font-family="Nunito Sans" opacity="0.8">h</text>`;
+  }
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:220px;">
+    <!-- sky bg -->
+    <rect width="${W}" height="${H}" fill="#eef7ff" rx="12"/>
+    <!-- ground -->
+    <rect x="0" y="128" width="${W}" height="12" rx="0" fill="#cce0f0"/>
+    <!-- Rail shadow -->
+    <path d="${railPath}" fill="none" stroke="#b0c4d8" stroke-width="7" stroke-linecap="round"/>
+    <!-- Rail -->
+    <path d="${railPath}" fill="none" stroke="#4a6075" stroke-width="5" stroke-linecap="round"/>
+    <!-- Rail highlight -->
+    <path d="${railPath}" fill="none" stroke="#7a96b0" stroke-width="2" stroke-dasharray="6,4" opacity="0.6" stroke-linecap="round"/>
+
+    ${heightLine}
+    ${speedArrows}
+
+    <!-- Gondola group -->
+    <g transform="translate(${gx},${gy}) rotate(${gondolaAngle})">
+      <!-- shadow -->
+      <ellipse cx="2" cy="2" rx="${R+3}" ry="${R+3}" fill="rgba(0,0,0,0.08)"/>
+      <!-- outer ring -->
+      <circle cx="0" cy="0" r="${R+4}" fill="none" stroke="#a83050" stroke-width="3"/>
+      <!-- disk body -->
+      <circle cx="0" cy="0" r="${R}" fill="#d94f6e"/>
+      <!-- rotation spokes -->
+      <line x1="-${R}" y1="0" x2="${R}" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      <line x1="0" y1="-${R}" x2="0" y2="${R}" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      <!-- seats around perimeter -->
+      ${seats}
+      <!-- hub -->
+      <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.9"/>
+      <!-- rotation arrow hint -->
+      <path d="M -8,-12 A 14,14 0 0 1 8,-12" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <polygon points="8,-12 11,-8 5,-9" fill="rgba(255,255,255,0.6)"/>
+    </g>
+  </svg>`;
+}
+
+// ── Render ──────────────────────────────────────────────────────────
+function render() {
+  const container = document.getElementById('scenes');
+  container.innerHTML = scenes.map((s, i) => `
+    <div class="scene-card" id="card${i}">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;">
+        <div class="scene-num">${s.num}</div>
+        <div class="scene-title">${s.title}</div>
+      </div>
+      <div class="ride-svg-wrap">${makeSVG(s.phase)}</div>
+      <div class="scene-sub">${s.sub}</div>
+      <div class="bars-row">
+        <div class="bar-group">
+          <div class="bar-label k">Energía<br>Cinética</div>
+          <div class="bar-track" onclick="cycle(${i},'k')" title="Haz clic para cambiar">
+            <div class="bar-fill k" id="bk${i}" style="height:${userK[i]}%"></div>
+          </div>
+          <div class="bar-pct k" id="pk${i}">${userK[i]}%</div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-label p">Energía<br>Potencial</div>
+          <div class="bar-track" onclick="cycle(${i},'p')" title="Haz clic para cambiar">
+            <div class="bar-fill p" id="bp${i}" style="height:${userP[i]}%"></div>
+          </div>
+          <div class="bar-pct p" id="pp${i}">${userP[i]}%</div>
+        </div>
+      </div>
+      <div class="hint-click">↑ Toca las barras para ajustar</div>
+    </div>
+  `).join('');
+}
+
+function cycle(i, type) {
+  if (type === 'k') {
+    userK[i] = nextStep(userK[i]);
+    document.getElementById(`bk${i}`).style.height = userK[i] + '%';
+    document.getElementById(`pk${i}`).textContent = userK[i] + '%';
+  } else {
+    userP[i] = nextStep(userP[i]);
+    document.getElementById(`bp${i}`).style.height = userP[i] + '%';
+    document.getElementById(`pp${i}`).textContent = userP[i] + '%';
+  }
+  document.getElementById('card' + i).className = 'scene-card';
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = 'Ajusta los niveles de energía en los tres puntos y pulsa <strong>Comprobar</strong>.';
+}
+
+function checkAnswers() {
+  let correct = 0;
+  const hints = [];
+  scenes.forEach((s, i) => {
+    const card = document.getElementById('card' + i);
+    const okK = userK[i] === s.correctK;
+    const okP = userP[i] === s.correctP;
+    if (okK && okP) {
+      correct++;
+      card.className = 'scene-card correct';
+      hints.push(`✅ <strong>${s.title}</strong>: ¡Correcto!`);
+    } else {
+      card.className = 'scene-card wrong';
+      const errs = [];
+      if (!okK) errs.push(`cinética → ${s.correctK}%`);
+      if (!okP) errs.push(`potencial → ${s.correctP}%`);
+      hints.push(`❌ <strong>${s.title}</strong>: ${errs.join(', ')}`);
+    }
+  });
+
+  const fb = document.getElementById('feedback');
+  if (correct === 3) {
+    fb.className = 'feedback success';
+    fb.innerHTML = '🎉 ¡Perfecto! Los tres puntos son correctos. Ya dominas la energía del Tifón.';
+  } else {
+    fb.className = 'feedback partial';
+    fb.innerHTML = hints.join('&nbsp;&nbsp;·&nbsp;&nbsp;');
+  }
+}
+
+function resetAll() {
+  for (let i = 0; i < 3; i++) { userK[i] = 50; userP[i] = 50; }
+  render();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.innerHTML = 'Ajusta los niveles de energía en los tres puntos y pulsa <strong>Comprobar</strong>.';
+}
+
+render();
+</script>
+</body>
+</html>
